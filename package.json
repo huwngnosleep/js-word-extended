@@ -1,6 +1,6 @@
 {
 	"name": "word-math",
-	"version": "0.0.1",
+	"version": "0.0.3",
 	"author": "sheetjs",
 	"description": "Extended version to compatible with OMML of Word Processing Document library",
 	"keywords": [
@@ -37,9 +37,6 @@
 		"test": "mocha -r ts-node/register test.ts"
 	},
 	"homepage": "https://wordjs.com/",
-	"bugs": {
-		"url": "https://github.com/SheetJS/js-word/issues"
-	},
 	"license": "Apache-2.0",
 	"engines": {
 		"node": ">=0.8"
