@@ -1,10 +1,15 @@
 {
-	"name": "word",
-	"version": "0.4.0",
+	"name": "word-math",
+	"version": "0.0.1",
 	"author": "sheetjs",
-	"description": "Word Processing Document library",
+	"description": "Extended version to compatible with OMML of Word Processing Document library",
 	"keywords": [
-		"word"
+		"word",
+		"word-math",
+		"mathml",
+		"omath",
+		"omml",
+		"omml2mml"
 	],
 	"main": "./word",
 	"types": "./dist/typings/index.d.ts",
@@ -24,7 +29,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/SheetJS/js-word.git"
+		"url": "git://github.com/huwngnosleep/js-word-extended"
 	},
 	"scripts": {
 		"build:cjs": "tsc -p tsconfig/tsconfig.cjs.json",
