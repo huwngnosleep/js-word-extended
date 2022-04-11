@@ -10,7 +10,8 @@
 	"types": "./dist/typings/index.d.ts",
 	"dependencies": {
 		"cfb": "^1.2.0",
-		"jsdom": "^16.2.2"
+		"jsdom": "^16.2.2",
+		"omml2mathml": "^1.3.0"
 	},
 	"devDependencies": {
 		"@types/jsdom": "^16.2.3",
