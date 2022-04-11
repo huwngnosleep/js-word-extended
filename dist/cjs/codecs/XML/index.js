@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.read = exports.parse_str = void 0;
 var jsdom_1 = require("jsdom");
 function parse_str(data) {
     // dom.window.document.children[0].tagName)

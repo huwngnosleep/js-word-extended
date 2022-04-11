@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.readFib = void 0;
 /**
  * [MS-DOC] 2.5.1 Fib
  */

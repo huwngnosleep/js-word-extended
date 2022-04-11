@@ -44,14 +44,14 @@ export type WJSParaElement = WJSTextRun | WJSTable | WJSEndNote;
 export interface WJSPara {
   /** Children */
   elts: WJSParaElement[];
-  localData: String[];
+  localData?: String[];
 }
 
 /** WordJS Document */
 export interface WJSDoc {
   p: WJSPara[];
   rels?: WJSRelationship;
-  html: String,
+  html?: String,
 }
 
 /** Relationship */

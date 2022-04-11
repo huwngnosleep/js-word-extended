@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseClx = exports.getTxt = void 0;
 /**
  * [MS-DOC] 2.9.38 Clx
  */

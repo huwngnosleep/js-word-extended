@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.parse_str = exports.write_buf = exports.write_str = void 0;
 function write_para_elt_str(elt, opts) {
     var RS = opts && opts.RS || "\n";
     switch (elt.t) {
@@ -12,7 +13,7 @@ function write_para_elt_str(elt, opts) {
                     }).join(RS);
                 }).join(RS);
             }).join(RS);
-        default: throw "Cannot generate plaintext for " + elt.t + " elements";
+        default: throw "Cannot generate plaintext for ".concat(elt.t, " elements");
     }
 }
 function write_para_str(para, opts) {

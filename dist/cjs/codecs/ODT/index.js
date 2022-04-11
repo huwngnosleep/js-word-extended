@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.parse_cfb = void 0;
 var cfb_1 = require("cfb");
 var jsdom_1 = require("jsdom");
 /* 5.1.3 <text:p> children */
@@ -43,7 +44,7 @@ function process_tr(trelt) {
                 tablerow.c.push(process_td(element));
                 break;
             // table:covered-table-cell
-            default: throw "ODT tablerow unsupported " + element.tagName + " element";
+            default: throw "ODT tablerow unsupported ".concat(element.tagName, " element");
         }
     });
     return tablerow;
@@ -60,7 +61,7 @@ function process_table(tablelt) {
             case "table:table-row":
                 table.r.push(process_tr(element));
                 break;
-            default: throw "ODT table unsupported " + element.tagName + " element";
+            default: throw "ODT table unsupported ".concat(element.tagName, " element");
         }
     });
     return table;
@@ -75,7 +76,7 @@ function process_illustration_index(child, root) {
                 case "text:index-body":
                     element.childNodes.forEach(function (child) { return process_index_body(child, root); });
                     break;
-                default: throw "ODT illustration-index unsupported " + element.tagName + " element";
+                default: throw "ODT illustration-index unsupported ".concat(element.tagName, " element");
             }
     }
 }
@@ -136,7 +137,7 @@ function process_body_elt(child, root) {
                 case "text:tracked-changes":
                     if (root)
                         break;
-                default: throw "ODT body unsupported " + element.tagName + " element";
+                default: throw "ODT body unsupported ".concat(element.tagName, " element");
             }
             break;
     }
@@ -149,7 +150,7 @@ function process_body_elt(child, root) {
  */
 function parse_cfb(file) {
     // Read the content.xml of the file
-    var buf = cfb_1.find(file, '/content.xml').content;
+    var buf = (0, cfb_1.find)(file, '/content.xml').content;
     // Parse with JSDOM
     var dom = new jsdom_1.JSDOM(buf.toString(), { contentType: "text/xml" });
     var doc = { p: [] };
