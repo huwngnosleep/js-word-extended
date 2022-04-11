@@ -1,23 +1,25 @@
 import { read as readCFB, find, CFB$Container } from "cfb";
 import { JSDOM } from "jsdom";
-import { WJSDoc, WJSPara, WJSTable, WJSTableRow, WJSTableCell } from "../../types";
-
+import { WJSDoc, WJSPara, WJSTable, WJSTableRow, WJSTableCell, ParsedData } from "../../types";
+const omml2mathml = require('omml2mathml');
 /* ECMA 17.3.1.22 p CT_P */
-function process_para(child: Node, root: WJSPara) {
+function process_para(child: Node, root: WJSPara, dataParsed: ParsedData) {
   switch (child.nodeType) {
     case 1 /* ELEMENT_NODE */:
-      const element = (child as Element);
+      let element = (child as Element);
       switch (element.tagName) {
         case "w:r":
         case "w:sdt":
         case "w:sdtContent":
         case "w:customXml":
-          element.childNodes.forEach((child) => process_para(child, root));
+          element.childNodes.forEach((child) => process_para(child, root, dataParsed));
           break;
         case "w:t":
-          root.elts.push({ t: "s", v: child.textContent }); break;
+          root.elts.push({ t: "s", v: child.textContent }); 
+          dataParsed.parsedHTML += element.outerHTML
+          break;
         case "w:hyperlink": // TODO: store actual hyperlink?
-          element.childNodes.forEach((child) => process_para(child, root));
+          element.childNodes.forEach((child) => process_para(child, root, dataParsed));
           break;
         case "w:br":
           break;
@@ -60,6 +62,16 @@ function process_para(child: Node, root: WJSPara) {
         case "mc:AlternateContent":
         case "m:oMath":
         case "m:oMathPara":
+          let mathmlElement = omml2mathml(element);
+          // console.log(mathmlElement)
+
+          if (mathmlElement) {
+              // console.log("THIS IS MATHHH")
+              element = mathmlElement
+              dataParsed.parsedHTML += element.outerHTML
+              // console.log(element.outerHTML)
+          }
+          break
         case "w16se:sym":
           break;
         default: throw `DOCX para unsupported ${element.tagName} element`
@@ -68,18 +80,18 @@ function process_para(child: Node, root: WJSPara) {
   }
 };
 
-function process_tc(tcelt: Element): WJSTableCell {
+function process_tc(tcelt: Element, dataParsed: ParsedData): WJSTableCell {
   const tableCell: WJSTableCell = { t: "c", p: [] };
   const para: WJSPara = {elts: []};
   tcelt.childNodes.forEach(child => {
-    const data = process_body_elt(child);
+    const data = process_body_elt(child, false, dataParsed);
     if (data) tableCell.p.push(data);
     // console.log(tableCell.p[0]);
   })
   return tableCell;
 }
 
-function process_tr(trelt: Element): WJSTableRow {
+function process_tr(trelt: Element, dataParsed: ParsedData): WJSTableRow {
   const tableRow: WJSTableRow = { t: "r", c: [] };
   trelt.childNodes.forEach(child => {
     if(child.nodeType != 1) return;
@@ -91,7 +103,7 @@ function process_tr(trelt: Element): WJSTableRow {
       case "w:commentRangeEnd": 
       break;
       case "w:tc" :
-        tableRow.c.push(process_tc(element));
+        tableRow.c.push(process_tc(element, dataParsed));
         // console.log("cells: ", tableRow.c);
         break;
       default: throw `DOCX tablerow unsupported ${element.tagName} element`
@@ -101,7 +113,7 @@ function process_tr(trelt: Element): WJSTableRow {
 
 }
 
-function process_table(tablelt: Element): WJSTable {
+function process_table(tablelt: Element, dataParsed: ParsedData): WJSTable {
   const table: WJSTable = { t: "t", r: [] };
   tablelt.childNodes.forEach(child => {
     if (child.nodeType != 1) return;
@@ -112,7 +124,7 @@ function process_table(tablelt: Element): WJSTable {
       case "w:bookmarkEnd":
         break;
       case "w:tr":
-        table.r.push(process_tr(element));
+        table.r.push(process_tr(element, dataParsed));
         // console.log("rows: ", table.r);
         break;
       default: throw `DOCX table unsuported ${element.tagName} element`
@@ -121,17 +133,17 @@ function process_table(tablelt: Element): WJSTable {
   return table;
 }
 
-function process_body_elt(child: ChildNode, root: boolean = false): WJSPara | void {
+function process_body_elt(child: ChildNode, root: boolean = false, dataParsed: ParsedData): WJSPara | void {
   const para: WJSPara = { elts: [] };
   switch (child.nodeType) {
     case 1: /* ELEMENT_NODE */
       const element = (child as Element);
       switch (element.tagName) {
         case "w:p":
-          element.childNodes.forEach((child) => process_para(child, para));
+          element.childNodes.forEach((child) => process_para(child, para, dataParsed));
           return para;
         case "w:tbl":
-          para.elts.push(process_table(element));
+          para.elts.push(process_table(element, dataParsed));
           return para;
         // console.log("tables: ", para.elts);
         case "w:customXML":
@@ -164,12 +176,12 @@ export function parse_cfb(file: CFB$Container): WJSDoc {
   const rootelt = dom.window.document.children[0];
 
   const bodyelt = rootelt.querySelector("w\\:document > w\\:body");
-
+  const dataParsed = { parsedHTML: "" }
   bodyelt.childNodes.forEach(child => {
-    const res = process_body_elt(child, true);
+    const res = process_body_elt(child, true, dataParsed);
     if (res) docx.p.push(res);
   })
-
+  console.log(dataParsed.parsedHTML)
   return docx;
 
   // const paragraphs = dom.window.document.querySelectorAll("w\\:p");

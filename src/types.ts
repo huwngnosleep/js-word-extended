@@ -13,6 +13,10 @@ export interface WJSEndNote {
   p: WJSPara[];
 }
 
+export interface ParsedData {
+  parsedHTML: String,
+}
+
 export interface WJSTableCell {
   t: "c";
   /** Body */
