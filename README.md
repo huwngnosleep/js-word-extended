@@ -1,4 +1,4 @@
-This is an extended version of npm npm package "[word]('https://www.npmjs.com/package/word')" to convert OMML to MathML in docx files.
+This is an extended version of npm package "[word]('https://www.npmjs.com/package/word')" to convert OMML to MathML in docx files.
 
 ## Usage
 ```
