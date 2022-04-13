@@ -1,6 +1,6 @@
 {
 	"name": "word-math",
-	"version": "0.0.3",
+	"version": "0.0.5",
 	"author": "sheetjs",
 	"description": "Extended version to compatible with OMML of Word Processing Document library",
 	"keywords": [

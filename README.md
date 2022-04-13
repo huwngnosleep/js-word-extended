@@ -1,1 +1,10 @@
-This is an extended version of [word]('https://www.npmjs.com/package/word') to compatible with OMML in docx files.
+This is an extended version of npm npm package "[word]('https://www.npmjs.com/package/word')" to convert OMML to MathML in docx files.
+
+## Usage
+```
+const word = require("word-math")
+
+const data = word.readFile("file/path/here.docx")
+
+console.log(data.html)
+```
