@@ -15,6 +15,7 @@ export interface WJSEndNote {
 
 export interface ParsedData {
   parsedHTML: String,
+  maths: String[],
 }
 
 export interface WJSTableCell {
@@ -45,13 +46,15 @@ export interface WJSPara {
   /** Children */
   elts: WJSParaElement[];
   localData?: String[];
+  maths?: String[];
 }
 
 /** WordJS Document */
 export interface WJSDoc {
   p: WJSPara[];
   rels?: WJSRelationship;
-  html?: String,
+  html?: String
+  maths?: String[]
 }
 
 /** Relationship */

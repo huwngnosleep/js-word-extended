@@ -63,11 +63,11 @@ function process_para(child: Node, root: WJSPara, parsedData: ParsedData) {
         case "m:oMath":
         case "m:oMathPara":
           let mathmlElement = omml2mathml(element);
-
+          
           if (mathmlElement) {
-              element = mathmlElement
+            element = mathmlElement
               parsedData.parsedHTML += element.outerHTML
-              // console.log(element.outerHTML)
+              parsedData.maths.push(element.outerHTML)
           }
           break
         case "w16se:sym":
@@ -153,8 +153,8 @@ function process_table(tablelt: Element, parsedData: ParsedData): WJSTable {
 }
 
 function process_body_elt(child: ChildNode, root: boolean = false): WJSPara | void {
-  const para: WJSPara = { elts: [], localData: [] };
-  const parsedData: ParsedData = {parsedHTML: ""}
+  const para: WJSPara = { elts: [], localData: [], maths: [] };
+  const parsedData: ParsedData = {parsedHTML: "", maths: []}
   switch (child.nodeType) {
     case 1: /* ELEMENT_NODE */
       const element = (child as Element);
@@ -162,6 +162,7 @@ function process_body_elt(child: ChildNode, root: boolean = false): WJSPara | vo
         case "w:p":
           element.childNodes.forEach((child) => process_para(child, para, parsedData));
           para.localData.push(parsedData.parsedHTML)
+          para.maths = para.maths.concat(parsedData.maths)
           return para;
         case "w:tbl":
           const table = process_table(element, parsedData)
@@ -194,20 +195,24 @@ export function parse_cfb(file: CFB$Container): WJSDoc {
   // Parse with JSDOM
   const dom = new JSDOM((buf as Buffer).toString(), { contentType: "text/xml" });
 
-  const docx: WJSDoc = { p: [], html: '' }
+  const docx: WJSDoc = { p: [], html: '', maths: [] }
 
   const rootelt = dom.window.document.children[0];
 
   const bodyelt = rootelt.querySelector("w\\:document > w\\:body");
   const htmlData = []
+  let mathData = []
   bodyelt.childNodes.forEach(child => {
     const res = process_body_elt(child, true);
     if (res) {
       docx.p.push(res);
       htmlData.push(res.localData)
+      mathData = mathData.concat(res.maths)
+      
     }
   })
   docx.html = htmlData.join('')
+  docx.maths = mathData
   return docx;
 
   // const paragraphs = dom.window.document.querySelectorAll("w\\:p");
